@@ -17,7 +17,7 @@ $ git clone https://github.com/berbakay/BonanzaData
 $ npm install
 ```
 
-$ run function node predictionAutomation
+* run function node predictionAutomation
 
 **API**
 
