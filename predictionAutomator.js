@@ -2,6 +2,30 @@
     const { config } = require('./config')
 
     const parseData = () => {
+
+        const teams = {
+            0: 'Arsenal',
+            1: 'Aston Villa',
+            2: 'Brighton and Hove Albion',
+            3: 'Burnley',
+            4: 'Chelsea',
+            5: 'Crystal Palace',
+            6: 'Everton',
+            7: 'Fulham',
+            8: 'Leeds United',
+            9: 'Leicester City',
+            10: 'Liverpool',
+            11: 'Manchester City',
+            12: 'Manchester United',
+            13: 'Newcastle United',
+            14: 'Sheffield United',
+            15: 'Southampton',
+            16: 'Tottenham Hotspur',
+            17: 'West Bromwich Albion',
+            18: 'West Ham United',
+            19: 'Wolverhampton Wanderers'
+        }
+
         const API_KEY = config.api_key
         axios.get(`https://api.the-odds-api.com/v3/odds/?apiKey=${API_KEY}&sport=soccer_epl&region=uk`)
         .then(res => {        
@@ -9,7 +33,7 @@
             console.log(`Requests Remaining: ${res.headers['x-requests-remaining']}\n`)
             
             //fixtures to rank
-            const fixtures = ['Everton v Tottenham Hotspur', "Newcastle United v West Ham United", "Wolverhampton Wanderers v Sheffield United", "Arsenal v Fulham", "Manchester United v Burnley", "Leeds United v Liverpool", "Chelsea v Brighton and Hove Albion", "Aston Villa v Manchester City", "Leicester City v West Bromwich Albion"]
+            const fixtures = [`${teams[13]} v ${teams[11]}`, `${teams[3]} v ${teams[8]}`, `${teams[15]} v ${teams[7]}`, `${teams[2]} v ${teams[18]}`, `${teams[5]} v ${teams[1]}`, `${teams[16]} v ${teams[19]}`, `${teams[17]} v ${teams[10]}`, `${teams[6]} v ${teams[14]}`]
             const jsonData = res.data.data
             const predictions = []
         
