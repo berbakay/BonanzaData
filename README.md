@@ -17,7 +17,12 @@ $ git clone https://github.com/berbakay/BonanzaData
 $ npm install
 ```
 
-* run function node predictionAutomation
+* run script 
+
+```
+node ./executionFile.js
+```
+N.B. Update fixtures.txt with relevant fixtures
 
 **API**
 
