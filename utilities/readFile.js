@@ -48,7 +48,7 @@ const readFixture = () => {
             noBlankFixtures.forEach((fixture, i) => {
                 fixturesArray[i] = fixture;
             })
-            console.log(noBlankFixtures);
+
             parseData(noBlankFixtures);
         }
     })
