@@ -34,9 +34,13 @@ const readFixture = () => {
 
                         let newFixture = fixture.replace(team, teams[team]);
                         
-                        //handle dirty Leeds edge case
+                        //handle dirty Leeds edge case (and Leicester)
                         if (newFixture.includes('Leeds United United')) {
                             newFixture = newFixture.replace('Leeds United United', 'Leeds United');
+                        };
+
+                        if (newFixture.includes('Leicester City City')) {
+                            newFixture = newFixture.replace('Leicester City City', 'Leicester City');
                         };
 
                         noBlankFixtures[noBlankFixtures.indexOf(fixture)] = newFixture;

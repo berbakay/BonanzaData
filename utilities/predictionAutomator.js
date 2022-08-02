@@ -4,14 +4,14 @@
     const parseData = (fixtureArray) => {
 
         const API_KEY = config.api_key
-        axios.get(`https://api.the-odds-api.com/v3/odds/?apiKey=${API_KEY}&sport=soccer_epl&region=uk`)
+        axios.get(`https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?regions=uk&apiKey=${API_KEY}`)
         .then(res => {        
             //log remaining requests - 500max per month
             console.log(`Requests Remaining: ${res.headers['x-requests-remaining']}\n`)
             
             //fixtures to rank
             const fixtures = fixtureArray;
-            const jsonData = res.data.data
+            const jsonData = res.data
             const predictions = []
         
             jsonData.forEach(fixture => {
@@ -26,28 +26,24 @@
                 fixtureObj.homeTeam = fixture.home_team
 
                 //log away team in fixture object
-                fixture.teams.forEach(team => {
-                    if (team !== fixtureObj.homeTeam) {
-                        fixtureObj.awayTeam = team
-                    }
-                })
+                fixtureObj.awayTeam = fixture.away_team
             
                 //put odds in correct place in fixture obj
-                fixture.sites.forEach(site => {
-                    if(fixture.teams[0] == fixtureObj.homeTeam) {
-                        fixtureObj.homeOdds += site.odds.h2h[0]
-                        fixtureObj.awayOdds += site.odds.h2h[1]
+                fixture.bookmakers.forEach(site => {
+                    if(site.markets[0].outcomes[0].name == fixtureObj.homeTeam) {
+                        fixtureObj.homeOdds += site.markets[0].outcomes[0].price
+                        fixtureObj.awayOdds += site.markets[0].outcomes[1].price
                     } else {
-                        fixtureObj.homeOdds += site.odds.h2h[1]
-                        fixtureObj.awayOdds += site.odds.h2h[0]
+                        fixtureObj.homeOdds += site.markets[0].outcomes[1].price
+                        fixtureObj.awayOdds += site.markets[0].outcomes[0].price
                     }
-                    fixtureObj.drawOdds += site.odds.h2h[2]
+                    fixtureObj.drawOdds += site.markets[0].outcomes[2].price
                 })
 
             //round odds
-            fixtureObj.homeOdds = Math.round((fixtureObj.homeOdds / fixture.sites.length) * 100) / 100
-            fixtureObj.awayOdds = Math.round((fixtureObj.awayOdds / fixture.sites.length) * 100) / 100
-            fixtureObj.drawOdds = Math.round((fixtureObj.drawOdds / fixture.sites.length) * 100) / 100
+            fixtureObj.homeOdds = Math.round((fixtureObj.homeOdds / fixture.bookmakers.length) * 100) / 100
+            fixtureObj.awayOdds = Math.round((fixtureObj.awayOdds / fixture.bookmakers.length) * 100) / 100
+            fixtureObj.drawOdds = Math.round((fixtureObj.drawOdds / fixture.bookmakers.length) * 100) / 100
 
             //pick lowest odds which determines which result to back
             if(fixtureObj.homeOdds <= fixtureObj.awayOdds && fixtureObj.homeOdds <= fixtureObj.drawOdds) {
@@ -71,7 +67,7 @@
             }
         });
 
-        //remove irrelevent fixutres fro predictions array
+        //remove irrelevent fixutres from predictions array
         const filteredPredictions = predictions.filter(prediction => {
             return fixtures.includes(prediction.fixture)
         })
