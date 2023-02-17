@@ -66,7 +66,11 @@
                 })
             }
         });
-
+        
+        //uncomment these console logs if you want to debug why there might be some missing fixtures
+        //console.log(predictions);
+        //console.log(fixtures);
+        
         //remove irrelevent fixutres from predictions array
         const filteredPredictions = predictions.filter(prediction => {
             return fixtures.includes(prediction.fixture)
@@ -75,11 +79,44 @@
         // predictions from most likely to least likely
         filteredPredictions.sort((a, b) => (a.odds > b.odds) ? 1 : ((b.odds > a.odds) ? -1 : 0))
 
+        //randomise odds that are close to eachother
+        randomGroup = [];
+        const randomPredictions = [];
+
+        filteredPredictions.forEach( prediction => {
+            /* if we haven't got anything in the array lets start a new one */
+            if( randomGroup.length ==  0 )
+                randomGroup.push( prediction )
+            else
+            {
+                /* if the difference with the first one is less then or equal to 0.1 then add it to array */
+                if( prediction.odds - randomGroup[0].odds <= 0.1 )
+                    randomGroup.push( prediction )
+                else
+                {
+                    /* if not pseudo randomly sort array and push to final array */
+                    randomGroup.sort( () => Math.random() - 0.5 )
+                    randomGroup.forEach( randomPrediction => {
+                        randomPredictions.push(randomPrediction)
+                    })
+                    /* reset array and push this prediction to it */
+                    randomGroup = []
+                    randomGroup.push(prediction)
+                }   
+            }
+        })
+
+        // make sure to add the last set of fixtures
+        randomGroup.sort( () => Math.random() - 0.5 )
+        randomGroup.forEach( randomPrediction => {
+            randomPredictions.push(randomPrediction)
+        })
+
         let count = 10
 
         //print fixtures, result and rank
-        filteredPredictions.forEach(prediction => {
-            console.log(`${prediction.fixture}, ${prediction.result}, ${count}`)
+        randomPredictions.forEach(prediction => {
+            console.log(`${prediction.fixture}, ${prediction.result}, ${count} (${prediction.odds})`)
             count -= 1;
         })          
         })
